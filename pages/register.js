@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
+import { signIn } from 'next-auth/react';
 
 import HeadOfPage from '../components/HeadOfPage';
 import FormRow from '../components/FormRow';
@@ -20,13 +21,31 @@ export default function Register() {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if ((!toggleLogin && !name) || !email || !password) {
       // alert
       return;
     }
+
+    if (!toggleLogin) {
+      try {
+        await axios.post('/api/auth/signup', {
+          name,
+          email,
+          password,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    signIn('credentials', {
+      email,
+      password,
+      callbackUrl: '/',
+    });
   };
 
   return (
