@@ -1,11 +1,12 @@
 import HeadOfPage from '../components/HeadOfPage';
+import Navbar from '../components/Navbar';
+import SmallSidebar from '../components/SmallSidebar';
 
 export default function Home() {
   return (
     <HeadOfPage title='Jobify'>
-      <div>
-        <h1>Jobify</h1>
-      </div>
+      <SmallSidebar />
+      <Navbar />
     </HeadOfPage>
   );
 }
