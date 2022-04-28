@@ -2,14 +2,23 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { FaAlignLeft, FaUserCircle, FaCaretDown } from 'react-icons/fa';
+
+import { useAppContext } from '../context/appContext';
+
 import Wrapper from '../wrappers/Navbar';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { setShowSidebar } = useAppContext();
+
   return (
     <Wrapper>
       <div className='nav-center'>
-        <button type='button' className='toggle-btn'>
+        <button
+          type='button'
+          className='toggle-btn'
+          onClick={() => setShowSidebar(true)}
+        >
           <FaAlignLeft />
         </button>
         <div>

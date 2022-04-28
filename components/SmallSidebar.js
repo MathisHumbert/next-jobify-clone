@@ -1,21 +1,25 @@
-import { useState } from 'react';
 import Image from 'next/image';
 import { FaTimes } from 'react-icons/fa';
 
+import { useAppContext } from '../context/appContext';
 import NavLinks from './NavLinks';
 import Wrapper from '../wrappers/SmallSidebar';
 
 export default function SmallSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { showSidebar, setShowSidebar } = useAppContext();
   return (
     <Wrapper>
       <div
         className={`${
-          isOpen ? 'sidebar-container show-sidebar' : 'sidebar-container'
+          showSidebar ? 'sidebar-container show-sidebar' : 'sidebar-container'
         }`}
       >
         <div className='content'>
-          <button className='close-btn' type='button'>
+          <button
+            className='close-btn'
+            type='button'
+            onClick={() => setShowSidebar(false)}
+          >
             <FaTimes />
           </button>
           <header>

@@ -1,12 +1,8 @@
-import HeadOfPage from '../components/HeadOfPage';
-import Navbar from '../components/Navbar';
-import SmallSidebar from '../components/SmallSidebar';
-
+import DefaultLayout from '../layouts/DefaultLayout';
 export default function Home() {
   return (
-    <HeadOfPage title='Jobify'>
-      <SmallSidebar />
-      <Navbar />
-    </HeadOfPage>
+    <DefaultLayout>
+      <h1>hello world</h1>
+    </DefaultLayout>
   );
 }
