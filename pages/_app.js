@@ -1,12 +1,15 @@
 import 'normalize.css';
+import { SessionProvider } from 'next-auth/react';
 import '../styles/index.css';
 import { AppProvider } from '../context/appContext';
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <AppProvider>
-      <Component {...pageProps} />
-    </AppProvider>
+    <SessionProvider session={session}>
+      <AppProvider>
+        <Component {...pageProps} />
+      </AppProvider>
+    </SessionProvider>
   );
 }
 

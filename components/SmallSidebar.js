@@ -6,19 +6,21 @@ import NavLinks from './NavLinks';
 import Wrapper from '../wrappers/SmallSidebar';
 
 export default function SmallSidebar() {
-  const { showSidebar, setShowSidebar } = useAppContext();
+  const { showSmallSidebar, setShowSmallSidebar } = useAppContext();
   return (
     <Wrapper>
       <div
         className={`${
-          showSidebar ? 'sidebar-container show-sidebar' : 'sidebar-container'
+          showSmallSidebar
+            ? 'sidebar-container show-sidebar'
+            : 'sidebar-container'
         }`}
       >
         <div className='content'>
           <button
             className='close-btn'
             type='button'
-            onClick={() => setShowSidebar(false)}
+            onClick={() => setShowSmallSidebar(false)}
           >
             <FaTimes />
           </button>

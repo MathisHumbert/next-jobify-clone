@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
+import axios from 'axios';
 
 import HeadOfPage from '../components/HeadOfPage';
 import FormRow from '../components/FormRow';
@@ -17,7 +18,6 @@ export default function Register() {
   const { name, email, password } = formValue;
 
   const onChange = (e) => {
-    console.log(e.target.name, e.target.value);
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
   };
 

@@ -9,7 +9,8 @@ import Wrapper from '../wrappers/Navbar';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setShowSidebar } = useAppContext();
+  const { setShowSmallSidebar, setShowBigSidebar, showBigSidebar } =
+    useAppContext();
 
   return (
     <Wrapper>
@@ -17,7 +18,10 @@ export default function Navbar() {
         <button
           type='button'
           className='toggle-btn'
-          onClick={() => setShowSidebar(true)}
+          onClick={() => {
+            setShowSmallSidebar(true);
+            setShowBigSidebar(!showBigSidebar);
+          }}
         >
           <FaAlignLeft />
         </button>

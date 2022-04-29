@@ -21,6 +21,9 @@ export default async function handler(req, res) {
     await db.collection('users').insertOne({
       email,
       password: await hash(password, 12),
+      name,
+      last_name: '',
+      location: '',
     });
 
     res.status(201).json({ message: 'User Created' });
