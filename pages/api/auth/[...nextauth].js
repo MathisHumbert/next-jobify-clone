@@ -24,6 +24,8 @@ export default NextAuth({
           return null;
         }
 
+        console.log('signin user', user);
+
         const checkPassword = await compare(
           credentials.password,
           user.password
@@ -35,6 +37,8 @@ export default NextAuth({
         return {
           email: user.email,
           name: user.name,
+          last_name: user.last_name,
+          location: user.location,
           id: user._id.toString(),
         };
       },
@@ -44,12 +48,16 @@ export default NextAuth({
     jwt: ({ token, user }) => {
       if (user) {
         token.id = user.id;
+        token.last_name = user.last_name;
+        token.location = user.location;
       }
       return token;
     },
     session: ({ session, token }) => {
       if (token) {
         session.id = token.id;
+        session.last_name = token.last_name;
+        session.location = token.location;
       }
       return session;
     },

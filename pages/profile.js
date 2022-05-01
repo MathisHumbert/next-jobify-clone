@@ -10,9 +10,9 @@ export default function Profile() {
   const { data: session } = useSession();
   const [formValue, setFormValue] = useState({
     name: session?.user?.name ? session.user.name : '',
-    last_name: session?.user?.last_name ? session.user.last_name : '',
+    last_name: session?.last_name ? session.last_name : '',
     email: session?.user?.email ? session.user.email : '',
-    location: session?.user?.last_name ? session.user.location : '',
+    location: session?.location ? session?.location : '',
   });
 
   const { name, last_name, email, location } = formValue;
@@ -24,15 +24,18 @@ export default function Profile() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const data = await axios.patch('/api/auth/update', {
-      ...formValue,
-      id: session.id,
-    });
+    try {
+      await axios.patch('/api/auth/update', {
+        ...formValue,
+        id: session.id,
+      });
+    } catch (error) {
+      console.log(error);
+      return;
+    }
 
-    console.log(data);
+    // update user object
   };
-
-  console.log(session);
 
   return (
     <DefaultLayout>

@@ -3,7 +3,6 @@ import { connectToDatabase } from '../../../services/mongodb';
 
 export default async function handler(req, res) {
   if (req.method === 'PATCH') {
-    console.log(req.body);
     const { email, name, last_name, location, id } = req.body;
 
     if (!email || !name || !last_name || !location) {
@@ -11,17 +10,22 @@ export default async function handler(req, res) {
       return;
     }
 
+    const query = { _id: ObjectId(id) };
+    const update = {
+      $set: {
+        email,
+        name,
+        last_name,
+        location,
+      },
+    };
+    const options = { returnNewDocument: true };
+
     const { db } = await connectToDatabase();
 
-    const updatedUser = db
+    const updatedUser = await db
       .collection('users')
-      .findOneAndUpdate(
-        { _id: ObjectId(id) },
-        { ...req.body },
-        { returnNewDocument: true }
-      );
-
-    console.log(updatedUser);
+      .findOneAndUpdate(query, update, options);
 
     res.status(201).json(updatedUser);
   } else {
