@@ -24,8 +24,6 @@ export default NextAuth({
           return null;
         }
 
-        console.log('signin user', user);
-
         const checkPassword = await compare(
           credentials.password,
           user.password
