@@ -1,27 +1,58 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSession, useSession } from 'next-auth/react';
 import axios from 'axios';
-import Wrapper from '../wrappers/JobsContainer';
 
+import Wrapper from '../wrappers/JobsContainer';
+import Job from '../wrappers/Job';
 export default function JobsContainer() {
+  const [loading, setLoading] = useState(false);
+  const [jobs, setJobs] = useState([]);
   const { searchForm } = useSelector((state) => state.app);
   const { data: session } = useSession();
-  console.log(searchForm);
+
+  const { status, type, sort, position } = searchForm;
 
   useEffect(() => {
+    setLoading(true);
+    if (session === undefined) return;
     const fetchJobs = async () => {
       try {
-        const { data } = await axios.get(`/api/jobs/${id}`);
+        const { data } = await axios.get(
+          `/api/jobs/?id=${session.id}&status=${status}&type=${type}&sort=${sort}&position=${position}`
+        );
+        setJobs(data);
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     };
 
     fetchJobs();
   }, [searchForm, session?.id]);
 
-  return <Wrapper>JobsContainer</Wrapper>;
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <Wrapper>
+        <h2>No jobs to display...</h2>
+      </Wrapper>
+    );
+  }
+
+  return (
+    <Wrapper>
+      <h5>{jobs.length} jobs found</h5>
+      <div className='jobs'>
+        {jobs.map((job) => (
+          <Job {...job} key={job._id} />
+        ))}
+      </div>
+    </Wrapper>
+  );
 }
 
 export async function getServerSideProps(context) {

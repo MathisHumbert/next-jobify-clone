@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId, Timestamp } from 'mongodb';
 import { connectToDatabase } from '../../../services/mongodb';
 
 export default async function handler(req, res) {
@@ -29,22 +29,35 @@ export default async function handler(req, res) {
       status,
       job_location,
       userId: ObjectId(id),
+      timestamp: new Timestamp(),
     });
 
     res.status(200).json({ message: 'Job added to collection' });
   }
   if (method === 'GET') {
-    // const { position, status, type, sort } = body;
-    console.log('query', query);
+    const { position, status, type, sort, id } = query;
 
-    // const customBody = {};
-    // !!position && (customBody.position = position);
-    // status !== 'all' && (customBody.status = status);
-    // type !== 'all' && (customBody.type = type);
+    const customBody = {
+      userId: ObjectId(id),
+    };
+    !!position && (customBody.position = position);
+    status !== 'all' && (customBody.status = status);
+    type !== 'all' && (customBody.type = type);
 
-    // console.log('customBody', customBody);
+    const customSort =
+      sort === 'latest'
+        ? { timestamp: 1 }
+        : sort === 'oldest'
+        ? { timestamp: -1 }
+        : sort === 'a-z'
+        ? { position: 1 }
+        : { position: -1 };
 
-    // const jobs = await db.collection('jobs').find.
-    res.status(200).json({ message: 'Job added to collection' });
+    const jobs = await db
+      .collection('jobs')
+      .find(customBody)
+      .sort(customSort)
+      .toArray();
+    res.status(200).json(jobs);
   }
 }
