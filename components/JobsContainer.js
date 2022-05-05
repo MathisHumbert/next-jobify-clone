@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getSession, useSession } from 'next-auth/react';
 import axios from 'axios';
 
 import Wrapper from '../wrappers/JobsContainer';
-import Job from '../wrappers/Job';
+import Job from '../components/Job';
+
 export default function JobsContainer() {
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
@@ -16,20 +17,31 @@ export default function JobsContainer() {
   useEffect(() => {
     setLoading(true);
     if (session === undefined) return;
-    const fetchJobs = async () => {
-      try {
-        const { data } = await axios.get(
-          `/api/jobs/?id=${session.id}&status=${status}&type=${type}&sort=${sort}&position=${position}`
-        );
-        setJobs(data);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
 
     fetchJobs();
   }, [searchForm, session?.id]);
+
+  const fetchJobs = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/jobs/?id=${session.id}&status=${status}&type=${type}&sort=${sort}&position=${position}`
+      );
+      setJobs(data);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
+  const deleteJob = async (id) => {
+    console.log(id);
+    try {
+      await axios.delete(`/api/jobs/${id}?userId=${session?.id}`);
+      fetchJobs();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -48,7 +60,7 @@ export default function JobsContainer() {
       <h5>{jobs.length} jobs found</h5>
       <div className='jobs'>
         {jobs.map((job) => (
-          <Job {...job} key={job._id} />
+          <Job job={job} deleteJob={deleteJob} key={job._id.toString()} />
         ))}
       </div>
     </Wrapper>

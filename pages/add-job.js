@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import { getSession, useSession } from 'next-auth/react';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 
+import { onJobFormChange } from '../features/appSlice';
 import DefaultLayout from '../layouts/DefaultLayout';
 import Wrapper from '../wrappers/DashboardFormPage';
 import FormRow from '../components/FormRow';
@@ -12,73 +13,60 @@ const jobTypeValues = ['full-time', 'part-time', 'remote', 'intership'];
 
 export default function AddJob() {
   const { data: session } = useSession();
-  const defaultFormValue = {
-    position: '',
-    company: '',
-    job_location: session?.location ? session?.location : '',
-    status: 'pending',
-    job_type: 'full-time',
-  };
-  const [formValue, setFormValue] = useState(defaultFormValue);
-  const { position, company, job_location, status, job_type } = formValue;
+  const { jobForm, editId } = useSelector((state) => state.app);
+
+  const { position, company, job_location, status, job_type } = jobForm;
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formValue);
 
     try {
-      axios.post('/api/jobs', { ...formValue, id: session.id });
+      axios.post('/api/jobs', { ...jobForm, id: session.id });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const onChange = (e) => {
-    setFormValue({ ...formValue, [e.target.name]: e.target.value });
-  };
-
-  console.log(session);
-
   return (
     <DefaultLayout>
       <Wrapper>
         <form className='form' onSubmit={onSubmit}>
-          <h4>profile</h4>
+          <h4>{editId ? 'edit job' : 'profile'}</h4>
           <div className='form-center'>
             <FormRow
               labelText='Position'
               type='text'
               name='position'
               value={position}
-              onChange={onChange}
+              onChange={onJobFormChange}
             />
             <FormRow
               labelText='Company'
               type='text'
               name='company'
               value={company}
-              onChange={onChange}
+              onChange={onJobFormChange}
             />
             <FormRow
               labelText='Job Location'
               type='text'
               name='job_location'
               value={job_location}
-              onChange={onChange}
+              onChange={onJobFormChange}
             />
             <FormRowSelect
               labelText='Status'
               list={statusValues}
               name='status'
               value={status}
-              onChange={onChange}
+              onChange={onJobFormChange}
             />
             <FormRowSelect
               labelText='Job Type'
               list={jobTypeValues}
               name='job_type'
               value={job_type}
-              onChange={onChange}
+              onChange={onJobFormChange}
             />
             <div className='btn-container'>
               <button type='submit' className='btn btn-block submit-btn'>

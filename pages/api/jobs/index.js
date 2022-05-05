@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       company,
       job_location,
       status,
-      job_location,
+      job_type,
       userId: ObjectId(id),
       timestamp: new Timestamp(),
     });
