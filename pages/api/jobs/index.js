@@ -40,24 +40,27 @@ export default async function handler(req, res) {
     const customBody = {
       userId: ObjectId(id),
     };
-    !!position && (customBody.position = position);
     status !== 'all' && (customBody.status = status);
-    type !== 'all' && (customBody.type = type);
+    type !== 'all' && (customBody.job_type = type);
 
     const customSort =
       sort === 'latest'
-        ? { createdAt: 1 }
-        : sort === 'oldest'
         ? { createdAt: -1 }
+        : sort === 'oldest'
+        ? { createdAt: 1 }
         : sort === 'a-z'
         ? { position: 1 }
         : { position: -1 };
 
-    const jobs = await db
+    let jobs = await db
       .collection('jobs')
       .find(customBody)
       .sort(customSort)
       .toArray();
+
+    if (position) {
+      jobs = jobs.filter((job) => job.position.includes(position) === true);
+    }
     res.status(200).json(jobs);
   }
 }

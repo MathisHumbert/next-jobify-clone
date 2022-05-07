@@ -9,7 +9,8 @@ import Wrapper from '../wrappers/Job';
 import JobInfo from './JobInfo';
 
 export default function Job({ job, deleteJob }) {
-  const { _id, position, company, job_location, status, createdAt } = job;
+  const { _id, position, company, job_location, status, createdAt, job_type } =
+    job;
   const dispatch = useDispatch();
 
   return (
@@ -28,7 +29,7 @@ export default function Job({ job, deleteJob }) {
             text={moment(createdAt).format('MMM Do YYYY')}
             icon={<FaCalendarAlt />}
           />
-          <JobInfo text={status} icon={<FaBriefcase />} />
+          <JobInfo text={job_type} icon={<FaBriefcase />} />
           <div className={`status ${status}`}>{status}</div>
         </div>
         <footer>
