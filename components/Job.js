@@ -2,13 +2,14 @@ import React from 'react';
 import { FaLocationArrow, FaBriefcase, FaCalendarAlt } from 'react-icons/fa';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
+import moment from 'moment';
 
 import { setJobForm } from '../features/appSlice';
 import Wrapper from '../wrappers/Job';
 import JobInfo from './JobInfo';
 
 export default function Job({ job, deleteJob }) {
-  const { _id, position, company, job_location, status } = job;
+  const { _id, position, company, job_location, status, createdAt } = job;
   const dispatch = useDispatch();
 
   return (
@@ -23,12 +24,16 @@ export default function Job({ job, deleteJob }) {
       <div className='content'>
         <div className='content-center'>
           <JobInfo text={job_location} icon={<FaLocationArrow />} />
-          {/* <JobInfo text={job_location} icon={<FaLocationArrow />} /> */}
+          <JobInfo
+            text={moment(createdAt).format('MMM Do YYYY')}
+            icon={<FaCalendarAlt />}
+          />
           <JobInfo text={status} icon={<FaBriefcase />} />
+          <div className={`status ${status}`}>{status}</div>
         </div>
         <footer>
           <div className='action'>
-            <span onClick={() => dispatch(setJobForm(job))}>
+            <span onClick={() => dispatch(setJobForm({ job, id: _id }))}>
               <Link href='/add-job' passHref>
                 <a className='btn edit-btn'>Edit</a>
               </Link>

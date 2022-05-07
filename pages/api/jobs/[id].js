@@ -3,9 +3,7 @@ import { connectToDatabase } from '../../../services/mongodb';
 
 export default async function handler(req, res) {
   const { method, query, body } = req;
-
   const { db } = await connectToDatabase();
-  console.log(method, query);
 
   if (method === 'DELETE') {
     const { userId, id } = query;
@@ -21,5 +19,33 @@ export default async function handler(req, res) {
     await db.collection('jobs').findOneAndDelete({ _id: ObjectId(id) });
 
     res.status(200).json({ message: 'Job was deleted' });
+  }
+  if (method === 'PATCH') {
+    console.log(query, body);
+    const { userId, id } = query;
+    const { position, company, job_location, status, job_type } = body;
+
+    const job = await db
+      .collection('jobs')
+      .findOne({ userId: ObjectId(userId), _id: ObjectId(id) });
+    if (!job) {
+      res.status(422).json({ message: 'No job found' });
+      return;
+    }
+
+    const queryOpts = { _id: ObjectId(id) };
+    const update = {
+      $set: {
+        position,
+        company,
+        job_location,
+        status,
+        job_type,
+      },
+    };
+
+    await db.collection('jobs').findOneAndUpdate(queryOpts, update);
+
+    res.status(200).json({ message: 'Job was edited' });
   }
 }

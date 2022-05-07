@@ -26,6 +26,7 @@ export default function JobsContainer() {
       const { data } = await axios.get(
         `/api/jobs/?id=${session.id}&status=${status}&type=${type}&sort=${sort}&position=${position}`
       );
+      console.log(data);
       setJobs(data);
     } catch (error) {
       console.log(error);
@@ -57,7 +58,9 @@ export default function JobsContainer() {
 
   return (
     <Wrapper>
-      <h5>{jobs.length} jobs found</h5>
+      <h5>
+        {jobs.length} job{jobs.length > 1 && 's'} found
+      </h5>
       <div className='jobs'>
         {jobs.map((job) => (
           <Job job={job} deleteJob={deleteJob} key={job._id.toString()} />

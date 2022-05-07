@@ -1,4 +1,4 @@
-import { ObjectId, Timestamp } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { connectToDatabase } from '../../../services/mongodb';
 
 export default async function handler(req, res) {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       status,
       job_type,
       userId: ObjectId(id),
-      timestamp: new Timestamp(),
+      createdAt: new Date().toString(),
     });
 
     res.status(200).json({ message: 'Job added to collection' });
@@ -46,9 +46,9 @@ export default async function handler(req, res) {
 
     const customSort =
       sort === 'latest'
-        ? { timestamp: 1 }
+        ? { createdAt: 1 }
         : sort === 'oldest'
-        ? { timestamp: -1 }
+        ? { createdAt: -1 }
         : sort === 'a-z'
         ? { position: 1 }
         : { position: -1 };
