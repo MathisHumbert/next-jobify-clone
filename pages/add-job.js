@@ -2,7 +2,7 @@ import { getSession, useSession } from 'next-auth/react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 
-import { onJobFormChange, resetJobForm } from '../features/appSlice';
+import { onJobFormChange, resetJobForm, setAlert } from '../features/appSlice';
 import DefaultLayout from '../layouts/DefaultLayout';
 import Wrapper from '../wrappers/DashboardFormPage';
 import FormRow from '../components/FormRow';
@@ -22,18 +22,32 @@ export default function AddJob() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    if (!position || !company || !job_location || !status || !job_type) {
+      dispatch(setAlert({ type: 'danger', text: 'All fields are required' }));
+      return;
+    }
+
     if (!editId) {
       try {
-        axios.post('/api/jobs', { ...jobForm, id: session.id });
+        const { data } = await axios.post('/api/jobs', {
+          ...jobForm,
+          id: session.id,
+        });
         dispatch(resetJobForm());
+        dispatch(setAlert({ type: 'success', text: data.message }));
       } catch (error) {
         console.log(error);
       }
     } else {
+      console.log('passed');
       try {
-        axios.patch(`/api/jobs/${editId}?userId=${session?.id}`, {
-          ...jobForm,
-        });
+        const { data } = await axios.patch(
+          `/api/jobs/${editId}?userId=${session?.id}`,
+          {
+            ...jobForm,
+          }
+        );
+        dispatch(setAlert({ type: 'success', text: data.message }));
         dispatch(resetJobForm());
       } catch (error) {
         console.log(error);
@@ -50,7 +64,7 @@ export default function AddJob() {
       <Wrapper>
         <form className='form' onSubmit={onSubmit}>
           <h3>{editId ? 'edit job' : 'profile'}</h3>
-          {alert.showAlert && <Alert />}
+          {alert.show && <Alert />}
           <div className='form-center'>
             <FormRow
               labelText='Position'

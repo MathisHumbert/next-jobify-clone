@@ -45,7 +45,7 @@ export const appSlice = createSlice({
     },
     resetJobForm: (state) => {
       state.jobForm = defaultJobForm;
-      editId = '';
+      state.editId = '';
     },
     setJobForm: (state, action) => {
       const { company, job_location, position, status, job_type } =
@@ -54,7 +54,7 @@ export const appSlice = createSlice({
       state.editId = action.payload.id;
     },
     setAlert: (state, action) => {
-      state.alert = action.payload;
+      state.alert = { ...action.payload, show: true };
     },
     unsetAlert: (state) => {
       state.alert = defaultAlert;
