@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import axios from 'axios';
@@ -6,14 +6,18 @@ import axios from 'axios';
 import HeadOfPage from '../components/HeadOfPage';
 import FormRow from '../components/FormRow';
 import Wrapper from '../wrappers/RegisterPage';
+import { getProviders } from 'next-auth/react';
 
-export default function Register() {
+export default function Register({ providers }) {
   const [toggleLogin, setToggleLogin] = useState(true);
+
   const [formValue, setFormValue] = useState({
     name: '',
     email: '',
     password: '',
   });
+
+  console.log(providers);
 
   const { name, email, password } = formValue;
 
@@ -103,4 +107,12 @@ export default function Register() {
       </Wrapper>
     </HeadOfPage>
   );
+}
+
+export async function getServerSideProps(context) {
+  let providers = await getProviders();
+  // providers.login.callbackUrl = `/profile`;
+  return {
+    props: { providers },
+  };
 }

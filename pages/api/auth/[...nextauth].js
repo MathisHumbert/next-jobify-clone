@@ -7,6 +7,7 @@ import { connectToDatabase } from '../../../services/mongodb';
 export default NextAuth({
   providers: [
     CredentialProvider({
+      id: 'credentials',
       name: 'credentials',
       credentials: {
         email: {
@@ -29,6 +30,34 @@ export default NextAuth({
           user.password
         );
         if (!checkPassword) {
+          return null;
+        }
+
+        return {
+          email: user.email,
+          name: user.name,
+          last_name: user.last_name,
+          location: user.location,
+          id: user._id.toString(),
+        };
+      },
+    }),
+    CredentialProvider({
+      id: 'update',
+      name: 'update',
+
+      credentials: {
+        email: {
+          type: 'email',
+        },
+      },
+      async authorize(credentials) {
+        const { db } = await connectToDatabase();
+
+        const user = await db
+          .collection('users')
+          .findOne({ email: credentials.email });
+        if (!user) {
           return null;
         }
 
@@ -68,3 +97,32 @@ export default NextAuth({
     signIn: '/register',
   },
 });
+
+// CredentialProvider({
+//   id: 'update',
+//   name: 'update',
+
+//   credentials: {
+//     email: {
+//       type: 'email',
+//     },
+//   },
+//   async authorize(credentials) {
+//     const { db } = await connectToDatabase();
+
+//     const user = await db
+//       .collection('users')
+//       .findOne({ email: credentials.email });
+//     if (!user) {
+//       return null;
+//     }
+
+//     return {
+//       email: user.email,
+//       name: user.name,
+//       last_name: user.last_name,
+//       location: user.location,
+//       id: user._id.toString(),
+//     };
+//   },
+// }),

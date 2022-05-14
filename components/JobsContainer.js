@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import moment from 'moment';
 
 import Wrapper from '../wrappers/JobsContainer';
 import Job from '../components/Job';
-import moment from 'moment';
+import filterJobs from '../utils/filterJobs';
 
 export default function JobsContainer({ serverJobs }) {
+  // const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [stockJobs, setStockJobs] = useState([]);
   const [onMount, setOnMount] = useState(true);
@@ -18,44 +20,15 @@ export default function JobsContainer({ serverJobs }) {
     setJobs(serverJobs);
     setStockJobs(serverJobs);
     setOnMount(false);
+    // setLoading(true)
   }, []);
 
   //  USE THIS WAY TO FILTER DATA WITHOUT CALLING API
   useEffect(() => {
     if (onMount) return;
-    const { position, status, type, sort } = searchForm;
 
-    let tempJobs = stockJobs;
-
-    if (position) {
-      tempJobs = tempJobs.filter(
-        (job) => job.position.includes(position) === true
-      );
-    }
-
-    if (status !== 'all') {
-      tempJobs = tempJobs.filter((job) => job.status === status);
-    }
-
-    if (type !== 'all') {
-      tempJobs = tempJobs.filter((job) => job.job_type == type);
-    }
-
-    if (sort === 'a-z') {
-      tempJobs = tempJobs.sort((a, b) => b.position.localeCompare(a.position));
-    } else if (sort === 'z-a') {
-      tempJobs = tempJobs.sort((a, b) => a.position.localeCompare(b.position));
-    } else if (sort === 'oldest') {
-      tempJobs = tempJobs.sort(
-        (a, b) => moment(b.createdAt) - moment(a.createdAt)
-      );
-    } else {
-      tempJobs = tempJobs.sort(
-        (a, b) => moment(a.createdAt) - moment(b.createdAt)
-      );
-    }
-
-    setJobs(tempJobs);
+    const filteredJobs = filterJobs(searchForm, stockJobs);
+    setJobs(filteredJobs);
   }, [searchForm]);
 
   // CAN USE THIS WAY TO GET AND FILTER DATA BY CALLING THE API
@@ -97,6 +70,14 @@ export default function JobsContainer({ serverJobs }) {
       </Wrapper>
     );
   }
+
+  // if (loading === true) {
+  //   return (
+  //     <Wrapper>
+  //       <h2>Loading...</h2>
+  //     </Wrapper>
+  //   );
+  // }
 
   if (jobs.length === 0) {
     return (

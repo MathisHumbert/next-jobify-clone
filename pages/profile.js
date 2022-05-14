@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession, useSession, getProviders, signIn } from 'next-auth/react';
 import axios from 'axios';
 
 import DefaultLayout from '../layouts/DefaultLayout';
@@ -34,7 +34,10 @@ export default function Profile() {
       return;
     }
 
-    // update user object
+    signIn('update', {
+      email,
+      callbackUrl: '/profile',
+    });
   };
 
   return (
