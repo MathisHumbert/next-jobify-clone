@@ -1,5 +1,5 @@
 const paginate = (jobs) => {
-  const itemsPerPage = 2;
+  const itemsPerPage = 10;
   const pages = Math.ceil(jobs.length / itemsPerPage);
 
   return Array.from({ length: pages }, (_, index) => {

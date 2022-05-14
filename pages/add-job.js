@@ -64,7 +64,7 @@ export default function AddJob() {
     <DefaultLayout>
       <Wrapper>
         <form className='form' onSubmit={onSubmit}>
-          <h3>{editId ? 'edit job' : 'profile'}</h3>
+          <h3>{editId ? 'edit job' : 'add job'}</h3>
           {alert.show && <Alert />}
           <div className='form-center'>
             <FormRow

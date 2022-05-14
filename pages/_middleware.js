@@ -7,7 +7,6 @@ export default async function middleware(req) {
       req,
       secret: process.env.JWT_SECRET,
     });
-    console.log('session', session);
     if (!session) return NextResponse.redirect(new URL('/landing', req.url));
   }
 }

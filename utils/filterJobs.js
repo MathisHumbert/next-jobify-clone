@@ -3,8 +3,6 @@ const filterJobs = (searchForm, stockJobs) => {
   const { position, status, type, sort } = searchForm;
   let tempJobs = stockJobs;
 
-  console.log(position);
-
   if (position) {
     tempJobs = tempJobs.filter(
       (job) =>

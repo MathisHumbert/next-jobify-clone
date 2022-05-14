@@ -7,58 +7,34 @@ import Wrapper from '../wrappers/JobsContainer';
 import Job from '../components/Job';
 import filterJobs from '../utils/filterJobs';
 import paginate from '../utils/paginate';
+import PageBtnContainer from './PageBtnContainer';
 
 export default function JobsContainer({ serverJobs }) {
-  // const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [stockJobs, setStockJobs] = useState([]);
-  const [onMount, setOnMount] = useState(true);
+  const [numberOfJobs, setNumberOfJobs] = useState(0);
   const [page, setPage] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
+  const [onMount, setOnMount] = useState(true);
   const { searchForm } = useSelector((state) => state.app);
   const { data: session } = useSession();
 
   useEffect(() => {
-    setJobs(serverJobs);
+    const paginateJobs = paginate(serverJobs);
+    setJobs(paginateJobs);
     setStockJobs(serverJobs);
+    setNumberOfJobs(serverJobs.length);
+    setNumberOfPages(paginateJobs.length);
     setOnMount(false);
-    // setLoading(true)
   }, []);
 
-  useEffect(() => {
-    if (!jobs.length) return;
-    const paginateJobs = paginate(jobs);
-    setNumberOfPages(paginateJobs.length);
-    setJobs(paginateJobs[page]);
-  }, [jobs]);
-
-  //  USE THIS WAY TO FILTER DATA WITHOUT CALLING API
   useEffect(() => {
     if (onMount) return;
 
     const filteredJobs = filterJobs(searchForm, stockJobs);
-    setJobs(filteredJobs);
+    const paginateJobs = paginate(filteredJobs);
+    setMultipleStates(paginateJobs, filteredJobs);
   }, [searchForm]);
-
-  // CAN USE THIS WAY TO GET AND FILTER DATA BY CALLING THE API
-  // useEffect(() => {
-  //   setLoading(true);
-  //   if (session === undefined) return;
-
-  //   fetchJobs();
-  // }, [searchForm, session?.id]);
-
-  // const fetchJobs = async () => {
-  //   try {
-  //     const { data } = await axios.get(
-  //       `/api/jobs/?id=${session.id}&status=${status}&type=${type}&sort=${sort}&position=${position}`
-  //     );
-  //     setJobs(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   setLoading(false);
-  // };
 
   const deleteJob = async (id) => {
     try {
@@ -68,8 +44,17 @@ export default function JobsContainer({ serverJobs }) {
       console.log(error);
     }
 
-    setJobs(jobs.filter((job) => job._id !== id));
-    setStockJobs(stockJobs.filter((job) => job._id !== id));
+    const newStockJobs = stockJobs.filter((job) => job._id !== id);
+    const paginateJobs = paginate(newStockJobs);
+    setStockJobs(newStockJobs);
+    setMultipleStates(paginateJobs, newStockJobs);
+  };
+
+  const setMultipleStates = (paginateJobs, allJobs) => {
+    setJobs(paginateJobs);
+    setNumberOfJobs(allJobs.length);
+    setNumberOfPages(paginateJobs.length);
+    setPage(page >= paginateJobs.length ? (page === 0 ? 0 : page - 1) : page);
   };
 
   if (onMount === true) {
@@ -80,18 +65,10 @@ export default function JobsContainer({ serverJobs }) {
     );
   }
 
-  // if (loading === true) {
-  //   return (
-  //     <Wrapper>
-  //       <h2>Loading...</h2>
-  //     </Wrapper>
-  //   );
-  // }
-
-  if (jobs.length === 0) {
+  if (numberOfJobs === 0) {
     return (
       <Wrapper>
-        <h2>No jobs to display...</h2>
+        <h2>No jobs to display</h2>
       </Wrapper>
     );
   }
@@ -99,13 +76,20 @@ export default function JobsContainer({ serverJobs }) {
   return (
     <Wrapper>
       <h5>
-        {jobs.length} job
-        {jobs.length > 1 && 's'} found
+        {numberOfJobs} job
+        {numberOfJobs > 1 && 's'} found
       </h5>
       <div className='jobs'>
-        {jobs.map((job) => (
+        {jobs[page].map((job) => (
           <Job job={job} deleteJob={deleteJob} key={job._id} />
         ))}
+        {numberOfPages > 1 && (
+          <PageBtnContainer
+            numberOfPages={numberOfPages}
+            setPage={setPage}
+            page={page}
+          />
+        )}
       </div>
     </Wrapper>
   );

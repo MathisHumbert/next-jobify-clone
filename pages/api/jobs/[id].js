@@ -21,7 +21,6 @@ export default async function handler(req, res) {
     res.status(200).json({ message: 'Job was deleted' });
   }
   if (method === 'PATCH') {
-    console.log(query, body);
     const { userId, id } = query;
     const { position, company, job_location, status, job_type } = body;
 
