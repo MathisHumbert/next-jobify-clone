@@ -95,6 +95,7 @@ export default NextAuth({
   secret: process.env.JWT_SECRET,
   pages: {
     signIn: '/register',
+    error: '/register',
   },
 });
 
