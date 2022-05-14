@@ -32,9 +32,8 @@ export default function Register() {
           text: 'Sign in failed. Check the details you provided are correct',
         })
       );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(error, signInStatus);
 
   const onChange = (e) => {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });

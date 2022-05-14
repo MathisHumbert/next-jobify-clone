@@ -26,6 +26,7 @@ export default function JobsContainer({ serverJobs }) {
     setNumberOfJobs(serverJobs.length);
     setNumberOfPages(paginateJobs.length);
     setOnMount(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function JobsContainer({ serverJobs }) {
     const filteredJobs = filterJobs(searchForm, stockJobs);
     const paginateJobs = paginate(filteredJobs);
     setMultipleStates(paginateJobs, filteredJobs);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchForm]);
 
   const deleteJob = async (id) => {

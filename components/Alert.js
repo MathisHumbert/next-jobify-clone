@@ -15,6 +15,7 @@ const Alert = () => {
     return () => {
       clearTimeout(timeout);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alert]);
 
   return <div className={`alert alert-${alert.type}`}>{alert.text}</div>;
