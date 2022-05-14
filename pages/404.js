@@ -17,7 +17,7 @@ export default function Custom404() {
         </div>
 
         <h3>Ohh! Page Not Found</h3>
-        <p>We can't seem to find the page you're looking for</p>
+        <p>We can&apos;t seem to find the page you&apos;re looking for</p>
         <Link href='/' passHref>
           <a>back home</a>
         </Link>
