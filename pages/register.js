@@ -43,10 +43,12 @@ export default function Register() {
     e.preventDefault();
 
     if ((!toggleLogin && !name) || !email || !password) {
-      setAlert({
-        type: 'danger',
-        text: 'All fields are required',
-      });
+      dispatch(
+        setAlert({
+          type: 'danger',
+          text: 'All fields are required',
+        })
+      );
       return;
     }
 
