@@ -33,7 +33,7 @@ export default function Register() {
         })
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [error]);
 
   const onChange = (e) => {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
