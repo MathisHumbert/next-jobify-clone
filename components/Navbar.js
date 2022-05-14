@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { FaAlignLeft, FaUserCircle, FaCaretDown } from 'react-icons/fa';
 
 import { useAppContext } from '../context/appContext';
@@ -11,6 +11,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { setShowSmallSidebar, setShowBigSidebar, showBigSidebar } =
     useAppContext();
+  const { data: session } = useSession();
 
   return (
     <Wrapper>
@@ -44,7 +45,7 @@ export default function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
           >
             <FaUserCircle />
-            Mathis
+            {session?.user?.name || 'User'}
             <FaCaretDown />
           </button>
           <div className={`${isOpen ? 'dropdown show-dropdown' : 'dropdown'} `}>

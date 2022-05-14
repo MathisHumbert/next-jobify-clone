@@ -1,10 +1,14 @@
+import moment from 'moment';
 const filterJobs = (searchForm, stockJobs) => {
   const { position, status, type, sort } = searchForm;
   let tempJobs = stockJobs;
 
+  console.log(position);
+
   if (position) {
     tempJobs = tempJobs.filter(
-      (job) => job.position.includes(position) === true
+      (job) =>
+        job.position.toLowerCase().includes(position.toLowerCase()) === true
     );
   }
 

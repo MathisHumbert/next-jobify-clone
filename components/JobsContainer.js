@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import moment from 'moment';
 
 import Wrapper from '../wrappers/JobsContainer';
 import Job from '../components/Job';
 import filterJobs from '../utils/filterJobs';
+import paginate from '../utils/paginate';
 
 export default function JobsContainer({ serverJobs }) {
   // const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [stockJobs, setStockJobs] = useState([]);
   const [onMount, setOnMount] = useState(true);
+  const [page, setPage] = useState(0);
+  const [numberOfPages, setNumberOfPages] = useState(0);
   const { searchForm } = useSelector((state) => state.app);
   const { data: session } = useSession();
 
@@ -22,6 +24,13 @@ export default function JobsContainer({ serverJobs }) {
     setOnMount(false);
     // setLoading(true)
   }, []);
+
+  useEffect(() => {
+    if (!jobs.length) return;
+    const paginateJobs = paginate(jobs);
+    setNumberOfPages(paginateJobs.length);
+    setJobs(paginateJobs[page]);
+  }, [jobs]);
 
   //  USE THIS WAY TO FILTER DATA WITHOUT CALLING API
   useEffect(() => {

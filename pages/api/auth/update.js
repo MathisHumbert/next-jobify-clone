@@ -23,11 +23,9 @@ export default async function handler(req, res) {
 
     const { db } = await connectToDatabase();
 
-    const updatedUser = await db
-      .collection('users')
-      .findOneAndUpdate(query, update, options);
+    await db.collection('users').findOneAndUpdate(query, update, options);
 
-    res.status(201).json(updatedUser);
+    res.status(201).json({ message: 'User updated' });
   } else {
     res.status(500).json({ message: 'Route not valid' });
   }

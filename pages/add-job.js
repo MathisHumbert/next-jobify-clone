@@ -36,10 +36,11 @@ export default function AddJob() {
         dispatch(resetJobForm());
         dispatch(setAlert({ type: 'success', text: data.message }));
       } catch (error) {
-        console.log(error);
+        dispatch(
+          setAlert({ type: 'danger', text: error.response.data.message })
+        );
       }
     } else {
-      console.log('passed');
       try {
         const { data } = await axios.patch(
           `/api/jobs/${editId}?userId=${session?.id}`,
@@ -50,7 +51,7 @@ export default function AddJob() {
         dispatch(setAlert({ type: 'success', text: data.message }));
         dispatch(resetJobForm());
       } catch (error) {
-        console.log(error);
+        setAlert({ type: 'danger', text: error.response.data.message });
       }
     }
   };

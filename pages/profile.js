@@ -1,19 +1,24 @@
 import { useState } from 'react';
-import { getSession, useSession, getProviders, signIn } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSession, useSession, signIn } from 'next-auth/react';
 import axios from 'axios';
 
+import { setAlert } from '../features/appSlice';
 import DefaultLayout from '../layouts/DefaultLayout';
 import Wrapper from '../wrappers/DashboardFormPage';
 import FormRow from '../components/FormRow';
+import Alert from '../components/Alert';
 
 export default function Profile() {
   const { data: session } = useSession();
+  const { alert } = useSelector((state) => state.app);
   const [formValue, setFormValue] = useState({
     name: session?.user?.name ? session.user.name : '',
     last_name: session?.last_name ? session.last_name : '',
     email: session?.user?.email ? session.user.email : '',
     location: session?.location ? session?.location : '',
   });
+  const dispatch = useDispatch();
 
   const { name, last_name, email, location } = formValue;
 
@@ -30,7 +35,7 @@ export default function Profile() {
         id: session.id,
       });
     } catch (error) {
-      console.log(error);
+      dispatch(setAlert({ type: 'danger', text: 'All fields are required' }));
       return;
     }
 
@@ -38,13 +43,15 @@ export default function Profile() {
       email,
       callbackUrl: '/profile',
     });
+    dispatch(setAlert({ type: 'success', text: 'User updated' }));
   };
 
   return (
     <DefaultLayout>
       <Wrapper>
         <form className='form' onSubmit={onSubmit}>
-          <h4>profile</h4>
+          <h3>profile</h3>
+          {alert.show && <Alert />}
           <div className='form-center'>
             <FormRow
               labelText='Name'

@@ -25,7 +25,7 @@ export default function SearchContainer() {
   return (
     <Wrapper>
       <form className='form'>
-        <h4>search forrm</h4>
+        <h4>search form</h4>
         <div className='form-center'>
           <FormRow
             labelText='Search'

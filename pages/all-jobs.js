@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 
 import { connectToDatabase } from '../services/mongodb';
 import DefaultLayout from '../layouts/DefaultLayout';
@@ -7,7 +7,6 @@ import SearchContainer from '../components/SearchContainer';
 import JobsContainer from '../components/JobsContainer';
 
 export default function AllJobs({ serverJobs }) {
-  console.log(serverJobs);
   return (
     <DefaultLayout>
       <SearchContainer />
